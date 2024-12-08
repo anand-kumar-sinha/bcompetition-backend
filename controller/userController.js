@@ -1,17 +1,7 @@
 const generateOtp = require("../middleware/generateOtp");
 const User = require("../models/User");
-const nodemailer = require("nodemailer");
 const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
 
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: "helloengg.420@gmail.com",
-    pass: "htqj ezbm cdfb jiim",
-  },
-});
 
 const auth = async (req, res) => {
   try {

@@ -1,4 +1,7 @@
 const nodemailer = require("nodemailer");
+const dotenv = require("dotenv");
+dotenv.config();
+
 
 const sendOtpMobileNumber = async ({ mobile_number, message }) => {
   let template_id = "1507162029064165626";
@@ -30,17 +33,17 @@ const sendOtpMobileNumber = async ({ mobile_number, message }) => {
 };
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
   secure: false,
   auth: {
-    user: "helloengg.420@gmail.com",
-    pass: "htqj ezbm cdfb jiim",
+    user: process.env.SMTP_EMAIL,
+    pass: process.env.SMTP_PASSWORD,
   },
 });
 
 const sendOtpMail = async ({ email, otp }) => {
-  console.log(email, otp);
+  console.log(process.env.SMTP_EMAIL, process.env.SMTP_PASSWORD);
   await transporter.sendMail({
     from: '"B competition" <helloengg.420@gmail.com>',
     to: email,
