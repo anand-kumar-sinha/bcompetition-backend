@@ -1,6 +1,5 @@
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -23,7 +22,7 @@ const sendOtpMobileNumber = async ({ mobile_number, otp }) => {
     return response.data;
   } catch (error) {
     console.error("Error sending OTP:", error.response?.data || error.message);
-    throw error;
+    // throw error;
   }
 };
 
@@ -38,7 +37,6 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendOtpMail = async ({ email, otp }) => {
-  console.log(process.env.SMTP_EMAIL, process.env.SMTP_PASSWORD);
   await transporter.sendMail({
     from: '"B competition" bcompetitionsms@gmail.com',
     to: email,

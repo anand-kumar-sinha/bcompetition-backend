@@ -16,6 +16,7 @@ const auth = async (req, res) => {
     const user = await User.findOne({ mobile_number });
     const otp = generateOtp();
     await sendOtpMobileNumber({ mobile_number, otp });
+    console.log("not interupted");
 
     if (user) {
       user.otp = otp;
@@ -171,7 +172,7 @@ const userRegister = async (req, res) => {
     user.state = state;
     user.city = district;
     user.refer_code = referCode;
-    user.referral_code = generateReferralCode();
+    user.referral_code = user._id.toString();
     user.isRegister = true;
     user.wallet_amount = 0;
 
@@ -186,7 +187,7 @@ const userRegister = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      error: error,
+      error: error?.errorResponse?.errmsg || error,
     });
   }
 };
