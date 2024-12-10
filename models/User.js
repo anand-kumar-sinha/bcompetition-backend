@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   date_of_birth: {
-    type: Date,
+    type: String,
   },
   gender: {
     type: String,
@@ -24,22 +24,13 @@ const userSchema = new mongoose.Schema({
   address: {
     type: String,
   },
-  country_id: {
+  country: {
     type: String,
   },
-  state_id: {
+  state: {
     type: String,
   },
-  city_id: {
-    type: String,
-  },
-  country_name: {
-    type: String,
-  },
-  state_name: {
-    type: String,
-  },
-  city_name: {
+  city: {
     type: String,
   },
   pin_code: {
@@ -53,7 +44,7 @@ const userSchema = new mongoose.Schema({
   },
   is_deleted: {
     type: Boolean,
-    default: 0,
+    default: false,
   },
   otp: {
     type: String,

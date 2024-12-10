@@ -1,33 +1,28 @@
 const nodemailer = require("nodemailer");
+const axios = require("axios");
+
 const dotenv = require("dotenv");
 dotenv.config();
 
-
-const sendOtpMobileNumber = async ({ mobile_number, message }) => {
-  let template_id = "1507162029064165626";
-
-  const url = `http://api.bulksmsgateway.in/sendmessage.php?user=${encodeURIComponent(
-    process.env.otp_sender_mobile_username
-  )}&password=${encodeURIComponent(
-    process.env.otp_sender_mobile_password
-  )}&mobile=${encodeURIComponent(mobile_number)}&message=${encodeURIComponent(
-    message
-  )}&sender=${encodeURIComponent(
-    process.env.otp_sender_mobile_sender
-  )}&type=${encodeURIComponent("3")}&template_id=${encodeURIComponent(
-    template_id
-  )}`;
-
+const sendOtpMobileNumber = async ({ mobile_number, otp }) => {
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Failed to send OTP. Please try again.");
-    }
-    const result = await response.text();
-    console.log("OTP sent successfully:");
-    return;
+    const response = await axios.post(
+      "https://www.fast2sms.com/dev/bulkV2",
+      {
+        variables_values: otp,
+        route: "otp",
+        numbers: mobile_number,
+      },
+      {
+        headers: {
+          authorization: process.env.OTP_SENDER_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (error) {
-    console.error("Error sending OTP:", error.message);
+    console.error("Error sending OTP:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -45,7 +40,7 @@ const transporter = nodemailer.createTransport({
 const sendOtpMail = async ({ email, otp }) => {
   console.log(process.env.SMTP_EMAIL, process.env.SMTP_PASSWORD);
   await transporter.sendMail({
-    from: '"B competition" <helloengg.420@gmail.com>',
+    from: '"B competition" bcompetitionsms@gmail.com',
     to: email,
     subject: "Your Verification Code",
     html: `
@@ -60,7 +55,7 @@ const sendOtpMail = async ({ email, otp }) => {
         </div>
         <p>This code is valid for the next <strong>10 minutes</strong>. Please do not share this code with anyone for your security.</p>
         <p>If you did not request this code, please ignore this email or <a href="https://bcompetition.com/support" style="color: #ffa200; text-decoration: none;">contact our support team</a> immediately.</p>
-        <p style="margin-top: 20px; font-style: italic; color: #777;">Stay secure,<br>The B Competition</p>
+        <p style="margin-top: 20px; font-style: italic; color: #777;">Stay secure,<br>The B competition</p>
       </div>
     `,
   });
