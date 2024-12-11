@@ -22,7 +22,6 @@ const sendOtpMobileNumber = async ({ mobile_number, otp }) => {
     return response.data;
   } catch (error) {
     console.error("Error sending OTP:", error.response?.data || error.message);
-    // throw error;
   }
 };
 

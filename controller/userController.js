@@ -1,7 +1,7 @@
 const generateOtp = require("../middleware/generateOtp");
 const User = require("../models/User");
 const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
-const generateReferralCode = require("../middleware/generateOtp");
+const generateToken = require("../middleware/generateToken");
 
 const auth = async (req, res) => {
   try {
@@ -15,14 +15,13 @@ const auth = async (req, res) => {
     }
     const user = await User.findOne({ mobile_number });
     const otp = generateOtp();
-    await sendOtpMobileNumber({ mobile_number, otp });
-    console.log("not interupted");
+
+    // await sendOtpMobileNumber({ mobile_number, otp });
 
     if (user) {
       user.otp = otp;
       user.fcm_id = fcm_id;
       user.device_id = device_id;
-      user.auth_token = device_id;
       await user.save();
       if (user.email) {
         await sendOtpMail({ email: user.email, otp });
@@ -76,7 +75,7 @@ const verifyOtp = async (req, res) => {
       return;
     }
 
-    const user = await User.findOne({ mobile_number }).select("otp");
+    const user = await User.findOne({ mobile_number }).select("otp auth_token");
     if (!user) {
       res.status(404).json({
         success: false,
@@ -92,12 +91,14 @@ const verifyOtp = async (req, res) => {
       });
       return;
     }
-
+    const token = generateToken(user._id);
+    user.auth_token = token;
     user.isVerified = true;
     await user.save();
     res.status(200).json({
       success: true,
       message: "Otp verified successfully",
+      auth_token: user.auth_token,
     });
     return;
   } catch (error) {
@@ -144,7 +145,6 @@ const userRegister = async (req, res) => {
       return;
     }
 
-
     const user = await User.findOne({ mobile_number });
     if (!user) {
       res.status(404).json({
@@ -160,7 +160,7 @@ const userRegister = async (req, res) => {
       });
       return;
     }
-
+    
     user.name = name;
     user.email = email;
     user.school_name = schoolname;
@@ -192,8 +192,33 @@ const userRegister = async (req, res) => {
   }
 };
 
+const userProfile = async (req, res) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "Something went wrong please login again",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      user: user,
+    });
+    return;
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
 module.exports = {
   auth,
   verifyOtp,
   userRegister,
+  userProfile
 };
