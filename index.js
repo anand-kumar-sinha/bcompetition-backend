@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 
 app.use(express.json());
@@ -25,6 +26,7 @@ dotenv.config();
 connectDataBase();
 
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is Started on ${process.env.PORT} port`);
