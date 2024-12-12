@@ -3,6 +3,9 @@ const User = require("../models/User");
 const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
 const generateToken = require("../middleware/generateToken");
 const Admin = require("../models/Admin");
+const Country = require("../models/Country");
+const City = require("../models/City");
+const State = require("../models/State");
 
 const createAdmin = async (req, res) => {
   try {
@@ -15,9 +18,9 @@ const createAdmin = async (req, res) => {
       return;
     }
 
-    const exitAdmin = await Admin.findOne({email})
+    const exitAdmin = await Admin.findOne({ email });
 
-    if(exitAdmin){
+    if (exitAdmin) {
       res.status(400).json({
         success: false,
         message: "Admin with this email already exists",
@@ -92,11 +95,154 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-const adminShut = async (req, res)=>{
-  process.exit(0);
-}
-const adminOn = async (req, res)=>{
-  process.on(0);
-}
+const createCountry = async (req, res) => {
+  try {
+    const { country } = req.body;
+    if (!country) {
+      res.status(400).json({
+        success: false,
+        message: "Please enter all required fields",
+      });
+      return;
+    }
 
-module.exports = { createAdmin, loginAdmin, adminShut, adminOn };
+    const existCountry = await Country.findOne({ country: country });
+    if (existCountry) {
+      res.status(400).json({
+        success: false,
+        message: "Country already exists",
+      });
+      return;
+    }
+
+    const newCountry = await Country.create({ country, status: true });
+
+    if (!newCountry) {
+      res.status(400).json({
+        success: false,
+        message: "Failed to create country",
+      });
+      return;
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Country created successfully",
+      country: newCountry,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
+const createState = async (req, res) => {
+  try {
+    const { state, countryId } = req.body;
+    if (!state || !countryId) {
+      res.status(400).json({
+        success: false,
+        message: "Please enter all required fields",
+      });
+      return;
+    }
+
+    const existState = await State.findOne({ state });
+    if (existState) {
+      res.status(400).json({
+        success: false,
+        message: "State already exists",
+      });
+      return;
+    }
+
+    const newState = await State.create({
+      state,
+      countryId: countryId,
+      status: true,
+    });
+
+    if (!newState) {
+      res.status(400).json({
+        success: false,
+        message: "Failed to create state",
+      });
+      return;
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Country created successfully",
+      state: newState,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
+const createCity = async (req, res) => {
+  try {
+    const { city, stateId, countryId } = req.body;
+
+    if (!city || !stateId || !countryId) {
+      res.status(400).json({
+        success: false,
+        message: "Please enter all required fields",
+      });
+      return;
+    }
+
+    const existCity = await City.findOne({ city });
+    if (existCity) {
+      res.status(400).json({
+        success: false,
+        message: "City already exists",
+      });
+      return;
+    }
+
+    const newCity = await City.create({
+      city,
+      stateId: stateId,
+      countryId: countryId,
+      status: true,
+    });
+
+    if (!newCity) {
+      res.status(400).json({
+        success: false,
+        message: "Failed to create city",
+      });
+      return;
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "City created successfully",
+      city: newCity,
+    });
+  } catch (error) {}
+};
+
+const adminShut = async (req, res) => {
+  process.exit(0);
+};
+
+const adminOn = async (req, res) => {
+  process.on(0);
+};
+
+module.exports = {
+  createAdmin,
+  loginAdmin,
+  adminShut,
+  adminOn,
+  createCountry,
+  createState,
+  createCity,
+};

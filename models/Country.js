@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const countrySchema = new mongoose.Schema({
-  name: {
+  country: {
     type: String,
     required: true,
   },
