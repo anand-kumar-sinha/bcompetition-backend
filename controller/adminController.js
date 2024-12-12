@@ -92,4 +92,11 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-module.exports = { createAdmin, loginAdmin };
+const adminShut = async (req, res)=>{
+  process.exit(0);
+}
+const adminOn = async (req, res)=>{
+  process.on(0);
+}
+
+module.exports = { createAdmin, loginAdmin, adminShut, adminOn };
