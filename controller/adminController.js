@@ -229,6 +229,96 @@ const createCity = async (req, res) => {
   } catch (error) {}
 };
 
+const fetchCountry = async (req, res) => {
+  try {
+    const countries = await Country.find({ status: true });
+    if (!countries) {
+      res.status(404).json({
+        success: false,
+        message: "No countries found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Countries fetched successfully",
+      countries: countries,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
+const fetchState = async (req, res) => {
+  try {
+    const { countryId } = req.params;
+    if (!countryId) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide countryId",
+      });
+      return;
+    }
+
+    const states = await State.find({ countryId: countryId, status: true });
+
+    if (states.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No states found for this country",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "States fetched successfully",
+      states: states,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
+const fetchCity = async (req, res) => {
+  try {
+    const { stateId } = req.params;
+    if (!stateId) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide stateId",
+      });
+      return;
+    }
+
+    const cities = await City.find({ stateId: stateId, status: true });
+    if (!cities) {
+      res.status(404).json({
+        success: false,
+        message: "No cities found for this state",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      message: "Cities fetched successfully",
+      cities: cities,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
 const adminShut = async (req, res) => {
   process.exit(0);
 };
@@ -245,4 +335,7 @@ module.exports = {
   createCountry,
   createState,
   createCity,
+  fetchCountry,
+  fetchState,
+  fetchCity,
 };
