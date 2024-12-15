@@ -97,7 +97,8 @@ const loginAdmin = async (req, res) => {
 
 const createCountry = async (req, res) => {
   try {
-    const { country } = req.body;
+    const { country, status } = req.body;
+
     if (!country) {
       res.status(400).json({
         success: false,
@@ -115,7 +116,7 @@ const createCountry = async (req, res) => {
       return;
     }
 
-    const newCountry = await Country.create({ country, status: true });
+    const newCountry = await Country.create({ country, status: status });
 
     if (!newCountry) {
       res.status(400).json({
@@ -140,7 +141,7 @@ const createCountry = async (req, res) => {
 
 const createState = async (req, res) => {
   try {
-    const { state, countryId } = req.body;
+    const { state, countryId, status } = req.body;
     if (!state || !countryId) {
       res.status(400).json({
         success: false,
@@ -161,7 +162,7 @@ const createState = async (req, res) => {
     const newState = await State.create({
       state,
       countryId: countryId,
-      status: true,
+      status: status,
     });
 
     if (!newState) {
@@ -231,8 +232,20 @@ const createCity = async (req, res) => {
 
 const fetchCountry = async (req, res) => {
   try {
-    const countries = await Country.find({ status: true });
-    if (!countries) {
+    let { page } = req.query;
+    page = parseInt(page, 10);
+    const limit = 5;
+
+    if (!page || page < 1) {
+      page = 1;
+    }
+    const total = await Country.countDocuments();
+
+    const skip = (page - 1) * limit;
+
+    const countries = await Country.find().skip(skip).limit(limit);
+
+    if (!countries || countries.length === 0) {
       res.status(404).json({
         success: false,
         message: "No countries found",
@@ -244,45 +257,53 @@ const fetchCountry = async (req, res) => {
       success: true,
       message: "Countries fetched successfully",
       countries: countries,
+      total: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error,
+      error: error.message || error,
     });
   }
 };
 
 const fetchState = async (req, res) => {
   try {
-    const { countryId } = req.params;
-    if (!countryId) {
-      res.status(400).json({
-        success: false,
-        message: "Please provide countryId",
-      });
-      return;
+    let { page } = req.query;
+    page = parseInt(page, 10);
+    const limit = 5;
+
+    if (!page || page < 1) {
+      page = 1;
     }
+    const total = await State.countDocuments();
 
-    const states = await State.find({ countryId: countryId, status: true });
+    const skip = (page - 1) * limit;
 
-    if (states.length === 0) {
+    const states = await State.find().skip(skip).limit(limit);
+
+    if (!states || states.length === 0) {
       res.status(404).json({
         success: false,
-        message: "No states found for this country",
+        message: "No states found",
       });
       return;
     }
 
     res.status(200).json({
       success: true,
-      message: "States fetched successfully",
+      message: "states fetched successfully",
       states: states,
+      total: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error,
+      error: error.message || error,
     });
   }
 };
@@ -319,6 +340,42 @@ const fetchCity = async (req, res) => {
   }
 };
 
+const deleteCountry = async (req, res) => {
+  try {
+    const { countryId } = req.params;
+    if (!countryId) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide countryId",
+      });
+      return;
+    }
+
+    const country = await Country.findByIdAndDelete(countryId);
+    if (!country) {
+      res.status(404).json({
+        success: false,
+        message: "Country not found",
+      });
+      return;
+    }
+
+    const state = await State.deleteMany({ countryId: countryId });
+
+    const city = await City.deleteMany({ countryId: countryId });
+
+    res.status(200).json({
+      success: true,
+      message: "Country deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error,
+    });
+  }
+};
+
 const adminShut = async (req, res) => {
   process.exit(0);
 };
@@ -338,4 +395,5 @@ module.exports = {
   fetchCountry,
   fetchState,
   fetchCity,
+  deleteCountry,
 };
