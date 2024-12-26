@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
 const generateToken = require("../middleware/generateToken");
 const Country = require("../models/Country");
+const State = require("../models/State");
 
 const auth = async (req, res) => {
   try {
@@ -243,10 +244,43 @@ const fetchCountry = async (req, res) => {
   }
 }
 
+const fetchState = async (req, res) => {
+  try {
+    const {id} = req.params;
+    if (!id) {
+      res.status(401).json({
+        success: false,
+        message: "Please provide country id",
+      });
+      return;
+    }
+
+    const state = await State.find({countryId: id, status: true})
+    if (!state) {
+      res.status(404).json({
+        success: false,
+        message: "No state found for this country",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      state: state
+    })
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+}
+
 module.exports = {
   auth,
   verifyOtp,
   userRegister,
   userProfile,
-  fetchCountry
+  fetchCountry,
+  fetchState
 };

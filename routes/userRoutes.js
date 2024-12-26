@@ -5,6 +5,7 @@ const {
   userRegister,
   userProfile,
   fetchCountry,
+  fetchState,
 } = require("../controller/userController");
 const { protect } = require("../middleware/auth");
 
@@ -15,5 +16,6 @@ router.route("/auth/verification-otp").post(verifyOtp);
 router.route("/auth/register").post(userRegister);
 router.route("/user/profile").get(protect, userProfile);
 router.route("/fetch/country").get(fetchCountry)
+router.route("/fetch/state/:id").get(fetchState)
 
 module.exports = router;

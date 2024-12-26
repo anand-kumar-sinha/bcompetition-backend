@@ -3,6 +3,8 @@ const {
   createAdmin,
   loginAdmin,
   adminShut,
+} = require("../controller/adminController");
+const {
   createCountry,
   createState,
   createCity,
@@ -10,7 +12,7 @@ const {
   fetchState,
   fetchCity,
   deleteCountry,
-} = require("../controller/adminController");
+} = require("../controller/localityContoller");
 
 const router = express.Router();
 
@@ -27,7 +29,7 @@ router.route("/shut").get(adminShut);
 // fetch locality
 router.route("/fetch/country").get(fetchCountry);
 router.route("/fetch/state").get(fetchState);
-router.route("/fetch/city/:stateId").get(fetchCity);
+router.route("/fetch/city").get(fetchCity);
 
 //edit and delete locality
 router.route("/edit/country/:countryId").get(deleteCountry);
