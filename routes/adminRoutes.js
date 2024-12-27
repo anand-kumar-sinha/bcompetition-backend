@@ -19,6 +19,7 @@ const {
   fetchCategory,
 } = require("../controller/CategoryController");
 const { fetchStudents } = require("../controller/studentController");
+const { createTest } = require("../controller/testController");
 
 const router = express.Router();
 
@@ -47,5 +48,8 @@ router.route("/fetch/category").get(fetchCategory);
 
 //students
 router.route("/fetch/students").get(fetchStudents);
+
+//test
+router.route("/create/test").post(createTest)
 
 module.exports = router;
