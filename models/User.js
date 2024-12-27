@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
   wallet_amount: {
     type: String,
   },
+  reward_earn: {
+    type: String,
+  },
   is_deleted: {
     type: Boolean,
     default: false,
