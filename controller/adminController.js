@@ -1,11 +1,9 @@
-const generateOtp = require("../middleware/generateOtp");
-const User = require("../models/User");
-const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
+
 const generateToken = require("../middleware/generateToken");
 const Admin = require("../models/Admin");
-const Country = require("../models/Country");
-const City = require("../models/City");
-const State = require("../models/State");
+const Category = require("../models/Category");
+const User = require("../models/User");
+
 
 const createAdmin = async (req, res) => {
   try {
@@ -95,6 +93,25 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+const adminDashboard = async (req, res) =>{
+  try {
+    const categories = await Category.countDocuments();
+    const students = await User.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      categories: categories,
+      students: students,
+    });
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      error: error,
+    });
+    
+  }
+}
+
 const adminShut = async (req, res) => {
   process.exit(0);
 };
@@ -108,4 +125,5 @@ module.exports = {
   loginAdmin,
   adminShut,
   adminOn,
+  adminDashboard
 };
