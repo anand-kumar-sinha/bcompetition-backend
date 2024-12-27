@@ -3,6 +3,7 @@ const {
   createAdmin,
   loginAdmin,
   adminShut,
+  adminDashboard,
 } = require("../controller/adminController");
 const {
   createCountry,
@@ -13,12 +14,18 @@ const {
   fetchCity,
   deleteCountry,
 } = require("../controller/localityContoller");
+const {
+  createCategory,
+  fetchCategory,
+} = require("../controller/CategoryController");
+const { fetchStudents } = require("../controller/studentController");
 
 const router = express.Router();
 
 // auth admin
 router.route("/auth/login").post(loginAdmin);
 router.route("/auth/register").post(createAdmin);
+router.route("/admin/dashboard").get(adminDashboard)
 
 // create locality
 router.route("/create/country").post(createCountry);
@@ -33,5 +40,12 @@ router.route("/fetch/city").get(fetchCity);
 
 //edit and delete locality
 router.route("/edit/country/:countryId").get(deleteCountry);
+
+//add categories
+router.route("/create/category").post(createCategory);
+router.route("/fetch/category").get(fetchCategory);
+
+//students
+router.route("/fetch/students").get(fetchStudents);
 
 module.exports = router;
