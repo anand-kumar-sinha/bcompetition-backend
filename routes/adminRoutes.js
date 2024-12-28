@@ -17,7 +17,7 @@ const {
 const {
   createCategory,
   fetchCategory,
-} = require("../controller/CategoryController");
+} = require("../controller/categoryController");
 const { fetchStudents } = require("../controller/studentController");
 const { createTest } = require("../controller/testController");
 
