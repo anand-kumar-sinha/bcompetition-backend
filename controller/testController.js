@@ -106,6 +106,44 @@ const createTest = async (req, res) => {
   }
 };
 
+const fetchAllTest = async (req, res) => {
+  try {
+    let { page } = req.query;
+    page = parseInt(page, 10);
+    const limit = 5;
+
+    if (!page || page < 1) {
+      page = 1;
+    }
+    const skip = (page - 1) * limit;
+
+    const total = await Test.countDocuments();
+    const tests = await Test.find().populate("subject").limit(limit).skip(skip);
+
+    if (!tests || tests.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "tests fetched successfully",
+      tests: tests,
+      total: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
+
 module.exports = {
   createTest,
+  fetchAllTest,
 };

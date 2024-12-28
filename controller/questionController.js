@@ -17,7 +17,6 @@ const createQuestion = async (req, res) => {
       questionLanguage,
       test_id,
     } = req.body;
-
     if (
       !question ||
       !questionType ||
@@ -93,6 +92,8 @@ const createQuestion = async (req, res) => {
     });
   }
 };
+
+
 
 module.exports = {
   createQuestion,

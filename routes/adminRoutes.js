@@ -19,7 +19,7 @@ const {
   fetchCategory,
 } = require("../controller/categoryController");
 const { fetchStudents } = require("../controller/studentController");
-const { createTest } = require("../controller/testController");
+const { createTest, fetchAllTest } = require("../controller/testController");
 const { createQuestion } = require("../controller/questionController");
 
 const router = express.Router();
@@ -52,6 +52,7 @@ router.route("/fetch/students").get(fetchStudents);
 
 //test
 router.route("/create/test").post(createTest)
+router.route("/fetch/test/all").get(fetchAllTest)
 
 //question
 router.route("/create/question").post(createQuestion)
