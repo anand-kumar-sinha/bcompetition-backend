@@ -14,11 +14,11 @@ const testSchema = new mongoose.Schema({
     required: true,
     default: "mock test",
   },
-  totalTestTime: {
+  testTime: {
     type: String,
     required: true,
   },
-  totalPrizePool: {
+  prizePool: {
     type: String,
     required: true,
   },
@@ -30,6 +30,10 @@ const testSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  pointSystem: {
+    type: String,
+    required: true,
+  },
   subject: [
     {
       type: mongoose.Types.ObjectId,
@@ -38,16 +42,61 @@ const testSchema = new mongoose.Schema({
   ],
   optionsType: {
     type: String,
-    required: true,
-    defaultValue: "Single Choice",
+    defaultValue: "mcq",
   },
   status: {
+    type: String,
+  },
+  totalAttemptSubject: {
+    type: String,
+  },
+  totalAttemptQuestion: {
+    type: String,
+  },
+  category: {
+    type: mongoose.Types.ObjectId,
+    ref: "Category",
+  },
+  publish_at: {
+    type: String,
+  },
+  publish_time: {
+    type: String,
+  },
+  unpublish_at: {
+    type: String,
+  },
+  unpublish_time: {
+    type: String,
+  },
+  auto_unpublish: {
     type: Boolean,
-    default: true,
+    default: false,
+  },
+  winer_list_publish: {
+    type: Boolean,
+    default: false,
+  },
+  result_publish: {
+    type: Boolean,
+    default: false,
+  },
+  result_auto_publish: {
+    type: Boolean,
+    default: false,
+  },
+  remain_number_of_slot: {
+    type: String,
+  },
+  totalQuestion: {
+    type: String,
+  },
+  totalMarks: {
+    type: String,
   },
   cash_prize: [
     {
-      prize: {
+      amount: {
         type: String,
         required: true,
       },

@@ -8,28 +8,42 @@ const createTest = async (req, res) => {
       testTitle,
       examDetail,
       testType,
-      totalTestTime,
-      totalPrizePool,
+      testTime,
+      prizePool,
       joinAmount,
       slots,
+      pointSystem,
       subject,
       optionsType,
       status,
-      cash_prize,
-    } = req.body;
+      cashPrize,
+      total_attempt_subject,
+      total_attempted_questions,
+      category,
+      publish_at,
+      publish_time,
+      unpublish_at,
+      unpublish_time,
+      auto_unpublish,
+      winer_list_publish,
+      result_publish,
+      result_auto_publish,
+      remain_number_of_slot,
+      totalQuestion,
+      totalMarks
+    } = req.body; 
 
     if (
       !testTitle ||
       !examDetail ||
       !testType ||
-      !totalTestTime ||
-      !totalPrizePool ||
+      !testTime ||
+      !prizePool ||
       !joinAmount ||
       !slots ||
       !subject ||
-      !optionsType ||
-      !status ||
-      !cash_prize
+      !cashPrize ||
+      !pointSystem
     ) {
       res.status(401).json({
         success: false,
@@ -40,7 +54,8 @@ const createTest = async (req, res) => {
 
     //creating subject
     let subArr = [];
-    for(let item of subject){
+    for (let item of subject) {
+      try {
         let sub = await Subject.create({ subject: item });
         if (!sub) {
           res.status(400).json({
@@ -50,21 +65,26 @@ const createTest = async (req, res) => {
           return;
         }
         subArr.push(sub._id);
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          error: error.message || error,
+        });
+        return;
+      }
     }
-    console.log(subArr)
 
     const test = await Test.create({
       testTitle,
       examDetail,
       testType,
-      totalTestTime,
-      totalPrizePool,
+      testTime,
+      prizePool,
       joinAmount,
       slots,
       subject: subArr,
-      optionsType,
-      status,
-      cash_prize,
+      cash_prize: cashPrize,
+      pointSystem
     });
 
     if (!test) {
