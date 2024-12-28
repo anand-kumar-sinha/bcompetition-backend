@@ -1,5 +1,6 @@
 const Question = require("../models/Question");
 const Subject = require("../models/Subject");
+const Test = require("../models/Test");
 
 const createQuestion = async (req, res) => {
   try {
@@ -14,6 +15,7 @@ const createQuestion = async (req, res) => {
       correctPoint,
       wrongPoint,
       questionLanguage,
+      test_id,
     } = req.body;
 
     if (
@@ -26,15 +28,30 @@ const createQuestion = async (req, res) => {
       !options ||
       !correctPoint ||
       !wrongPoint ||
-      !questionLanguage
+      !questionLanguage ||
+      !test_id
     ) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
+    const exitTest = await Test.findById(test_id).populate("subject");
+    if (!exitTest) {
+      return res.status(400).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
 
-    const exitsubject = await Subject.findById(subject);
+    let exitsubject;
+    for (let item of exitTest.subject) {
+      if (item.subject === subject) {
+        exitsubject = item;
+        break;
+      }
+    }
+
     if (!exitsubject) {
       return res.status(400).json({
         success: false,
@@ -42,10 +59,10 @@ const createQuestion = async (req, res) => {
       });
     }
 
-    const newQuestion = new Question.create({
+    const newQuestion = await Question.create({
       question,
       questionType,
-      subject,
+      subject: exitsubject._id,
       optionsType,
       optionsNumber,
       correctOption,
@@ -77,4 +94,6 @@ const createQuestion = async (req, res) => {
   }
 };
 
-module.exports = {};
+module.exports = {
+  createQuestion,
+};

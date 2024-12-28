@@ -28,6 +28,7 @@ const questionSchema = new mongoose.Schema({
   correctOption: {
     type: String,
     required: true,
+    select: false,
   },
   options: [
     {
