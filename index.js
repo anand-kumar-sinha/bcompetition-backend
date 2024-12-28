@@ -2,8 +2,8 @@ const { connectDataBase } = require("./config/database");
 const dotenv = require("dotenv");
 const express = require("express");
 const cors = require("cors");
-const userRoutes = require("./routes/userRoutes");
-const adminRoutes = require("./routes/adminRoutes");
+const userRoutes = require("./routes/userRoutes.js");
+const adminRoutes = require("./routes/adminRoutes.js");
 const app = express();
 
 app.use(express.json());
