@@ -8,7 +8,7 @@ const {
   fetchState,
 } = require("../controller/userController");
 const { protect } = require("../middleware/auth");
-const { fetchCategoryAll } = require("../controller/categoryController.js");
+const { fetchCategoryAll } = require("../controller/categoryController");
 
 const router = express.Router();
 
