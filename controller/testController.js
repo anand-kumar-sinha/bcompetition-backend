@@ -1,6 +1,5 @@
 const Subject = require("../models/Subject");
 const Test = require("../models/Test");
-const User = require("../models/User");
 
 const createTest = async (req, res) => {
   try {
