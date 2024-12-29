@@ -1,3 +1,4 @@
+const { response } = require("express");
 const Question = require("../models/Question");
 const Subject = require("../models/Subject");
 const Test = require("../models/Test");
@@ -93,8 +94,44 @@ const createQuestion = async (req, res) => {
   }
 };
 
+const updateQuestion = async (req, res) => {
+  try {
+    const { id, question, options, correctOption } = req.body;
 
+    if (!id || !question || !options || !correctOption) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    const questionDocument = await Question.findByIdAndUpdate(
+      id,
+      { question, options, correctOption },
+      { new: true }
+    );
+
+    if (!questionDocument) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Question updated successfully",
+      question: questionDocument,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
 
 module.exports = {
   createQuestion,
+  updateQuestion,
 };

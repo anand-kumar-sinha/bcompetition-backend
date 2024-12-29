@@ -30,7 +30,7 @@ const {
   fetchOngingTest,
   fetchTestById,
 } = require("../controller/testController");
-const { createQuestion } = require("../controller/questionController");
+const { createQuestion, updateQuestion } = require("../controller/questionController");
 
 const router = express.Router();
 
@@ -74,5 +74,7 @@ router.route("/fetch/test/:id").get(fetchTestById);
 
 //question
 router.route("/create/question").post(createQuestion);
+router.route("/update/question").post(updateQuestion);
+
 
 module.exports = router;
