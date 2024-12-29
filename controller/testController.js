@@ -13,23 +13,9 @@ const createTest = async (req, res) => {
       slots,
       pointSystem,
       subject,
-      optionsType,
-      status,
       cashPrize,
-      total_attempt_subject,
-      total_attempted_questions,
-      category,
-      publish_at,
-      publish_time,
-      unpublish_at,
-      unpublish_time,
-      auto_unpublish,
-      winer_list_publish,
-      result_publish,
-      result_auto_publish,
-      remain_number_of_slot,
-      totalQuestion,
-      totalMarks,
+      attemetedSubject,
+      attemeptedQuestion,
     } = req.body;
 
     if (
@@ -42,7 +28,9 @@ const createTest = async (req, res) => {
       !slots ||
       !subject ||
       !cashPrize ||
-      !pointSystem
+      !pointSystem ||
+      !attemeptedQuestion ||
+      !attemetedSubject
     ) {
       res.status(401).json({
         success: false,
@@ -84,6 +72,8 @@ const createTest = async (req, res) => {
       subject: subArr,
       cash_prize: cashPrize,
       pointSystem,
+      totalAttemptQuestion: attemeptedQuestion,
+      totalAttemptSubject: attemetedSubject,
     });
 
     if (!test) {
@@ -108,21 +98,7 @@ const createTest = async (req, res) => {
 
 const fetchAllTest = async (req, res) => {
   try {
-    let { page } = req.query;
-    page = parseInt(page, 10);
-    const limit = 5;
-
-    if (!page || page < 1) {
-      page = 1;
-    }
-    const skip = (page - 1) * limit;
-
-    const total = await Test.countDocuments({ isDeleted: false });
-    const tests = await Test.find({ isDeleted: false })
-      .populate("subject")
-      .populate("category")
-      .limit(limit)
-      .skip(skip);
+    const tests = await Test.find({ isDeleted: false }).populate("category");
 
     if (!tests || tests.length === 0) {
       return res.status(400).json({
@@ -135,9 +111,6 @@ const fetchAllTest = async (req, res) => {
       success: true,
       message: "tests fetched successfully",
       tests: tests,
-      total: total,
-      currentPage: page,
-      totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
     res.status(400).json({
@@ -213,27 +186,26 @@ const fetchDeletedTest = async (req, res) => {
   }
 };
 
-const fetchUnpublishedTest = async (req, res) =>{
+const fetchUnpublishedTest = async (req, res) => {
   try {
+    let tests = await Test.find({ isDeleted: false }).populate("category");
 
-    let tests = await Test.find({ isDeleted: false }).populate("category")
-    
     const getLocalTimestamp = () => {
       const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const date = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-    
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const date = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+
       return `${year}-${month}-${date}T${hours}:${minutes}`;
     };
-    
+
     const timestamp = getLocalTimestamp();
-    let finalTest = []
-    for(let item of tests){
-      if(item.unpublish_at < timestamp){
-        finalTest.push(item)
+    let finalTest = [];
+    for (let item of tests) {
+      if (item.unpublish_at < timestamp) {
+        finalTest.push(item);
       }
     }
 
@@ -247,7 +219,7 @@ const fetchUnpublishedTest = async (req, res) =>{
       success: true,
       message: "unpublished test fetched successfully",
       tests: finalTest,
-      timestamp
+      timestamp,
     });
   } catch (error) {
     res.status(400).json({
@@ -255,28 +227,28 @@ const fetchUnpublishedTest = async (req, res) =>{
       error: error.message || error,
     });
   }
-}
-const fetchUpcomingTest = async (req, res) =>{
-  try {
+};
 
-    let tests = await Test.find({ isDeleted: false }).populate("category")
-    
+const fetchUpcomingTest = async (req, res) => {
+  try {
+    let tests = await Test.find({ isDeleted: false }).populate("category");
+
     const getLocalTimestamp = () => {
       const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const date = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-    
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const date = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+
       return `${year}-${month}-${date}T${hours}:${minutes}`;
     };
-    
+
     const timestamp = getLocalTimestamp();
-    let finalTest = []
-    for(let item of tests){
-      if(item.publish_at > timestamp){
-        finalTest.push(item)
+    let finalTest = [];
+    for (let item of tests) {
+      if (item.publish_at > timestamp) {
+        finalTest.push(item);
       }
     }
 
@@ -290,7 +262,7 @@ const fetchUpcomingTest = async (req, res) =>{
       success: true,
       message: "upcoming test fetched successfully",
       tests: finalTest,
-      timestamp
+      timestamp,
     });
   } catch (error) {
     res.status(400).json({
@@ -298,28 +270,28 @@ const fetchUpcomingTest = async (req, res) =>{
       error: error.message || error,
     });
   }
-}
-const fetchOngingTest = async (req, res) =>{
-  try {
+};
 
-    let tests = await Test.find({ isDeleted: false }).populate("category")
-    
+const fetchOngingTest = async (req, res) => {
+  try {
+    let tests = await Test.find({ isDeleted: false }).populate("category");
+
     const getLocalTimestamp = () => {
       const now = new Date();
       const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const date = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-    
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const date = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+
       return `${year}-${month}-${date}T${hours}:${minutes}`;
     };
-    
+
     const timestamp = getLocalTimestamp();
-    let finalTest = []
-    for(let item of tests){
-      if(item.publish_at < timestamp && item.unpublish_at > timestamp){
-        finalTest.push(item)
+    let finalTest = [];
+    for (let item of tests) {
+      if (item.publish_at <= timestamp && item.unpublish_at >= timestamp) {
+        finalTest.push(item);
       }
     }
 
@@ -333,7 +305,7 @@ const fetchOngingTest = async (req, res) =>{
       success: true,
       message: "upcoming test fetched successfully",
       tests: finalTest,
-      timestamp
+      timestamp,
     });
   } catch (error) {
     res.status(400).json({
@@ -341,7 +313,7 @@ const fetchOngingTest = async (req, res) =>{
       error: error.message || error,
     });
   }
-}
+};
 
 const publishTest = async (req, res) => {
   try {
@@ -383,7 +355,45 @@ const publishTest = async (req, res) => {
   }
 };
 
+const fetchTestById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.status(401).json({
+        success: false,
+        message: "Please provide test id",
+      });
+      return;
+    }
 
+    const test = await Test.findById(id)
+      .populate({
+        path: "subject",
+        populate: {
+          path: "question",
+          select: "+correctOption"
+        },
+      })
+      .populate("category");
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Test fetched successfully",
+      test: test,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
 
 module.exports = {
   createTest,
@@ -393,5 +403,6 @@ module.exports = {
   publishTest,
   fetchUnpublishedTest,
   fetchUpcomingTest,
-  fetchOngingTest
+  fetchOngingTest,
+  fetchTestById,
 };
