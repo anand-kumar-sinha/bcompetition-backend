@@ -19,7 +19,16 @@ const {
   fetchCategory,
 } = require("../controller/categoryController");
 const { fetchStudents } = require("../controller/studentController");
-const { createTest, fetchAllTest } = require("../controller/testController");
+const {
+  createTest,
+  fetchAllTest,
+  deleteTest,
+  fetchDeletedTest,
+  publishTest,
+  fetchUnpublishedTest,
+  fetchUpcomingTest,
+  fetchOngingTest,
+} = require("../controller/testController");
 const { createQuestion } = require("../controller/questionController");
 
 const router = express.Router();
@@ -27,7 +36,7 @@ const router = express.Router();
 // auth admin
 router.route("/auth/login").post(loginAdmin);
 router.route("/auth/register").post(createAdmin);
-router.route("/admin/dashboard").get(adminDashboard)
+router.route("/admin/dashboard").get(adminDashboard);
 
 // create locality
 router.route("/create/country").post(createCountry);
@@ -51,10 +60,17 @@ router.route("/fetch/category").get(fetchCategory);
 router.route("/fetch/students").get(fetchStudents);
 
 //test
-router.route("/create/test").post(createTest)
-router.route("/fetch/test/all").get(fetchAllTest)
+router.route("/create/test").post(createTest);
+router.route("/fetch/test/all").get(fetchAllTest);
+router.route("/delete/test/:id").get(deleteTest);
+router.route("/fetch/deleted/test").get(fetchDeletedTest);
+router.route("/test/publish").post(publishTest);
+router.route("/fetch/unpublished/test").get(fetchUnpublishedTest);
+router.route("/fetch/upcoming/test").get(fetchUpcomingTest);
+router.route("/fetch/ongoing/test").get(fetchOngingTest);
+
 
 //question
-router.route("/create/question").post(createQuestion)
+router.route("/create/question").post(createQuestion);
 
 module.exports = router;

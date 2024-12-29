@@ -34,6 +34,10 @@ const testSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  testJoinType: {
+    type: String,
+    default: "free",
+  },
   subject: [
     {
       type: mongoose.Types.ObjectId,
@@ -60,13 +64,7 @@ const testSchema = new mongoose.Schema({
   publish_at: {
     type: String,
   },
-  publish_time: {
-    type: String,
-  },
   unpublish_at: {
-    type: String,
-  },
-  unpublish_time: {
     type: String,
   },
   auto_unpublish: {
@@ -82,6 +80,10 @@ const testSchema = new mongoose.Schema({
     default: false,
   },
   result_auto_publish: {
+    type: Boolean,
+    default: false,
+  },
+  isDeleted: {
     type: Boolean,
     default: false,
   },
