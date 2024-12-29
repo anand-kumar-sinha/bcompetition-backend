@@ -2,6 +2,7 @@
 const generateToken = require("../middleware/generateToken");
 const Admin = require("../models/Admin");
 const Category = require("../models/Category");
+const Test = require("../models/Test");
 const User = require("../models/User");
 
 
@@ -97,11 +98,13 @@ const adminDashboard = async (req, res) =>{
   try {
     const categories = await Category.countDocuments();
     const students = await User.countDocuments();
+    const test = await Test.countDocuments({isDeleted: false});
 
     res.status(200).json({
       success: true,
       categories: categories,
       students: students,
+      test: test,
     });
   } catch (error) {
     res.status(401).json({
