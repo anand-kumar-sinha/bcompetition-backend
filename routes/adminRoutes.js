@@ -30,6 +30,7 @@ const {
   fetchOngingTest,
   fetchTestById,
   updateTest,
+  addSectionByQuestion,
 } = require("../controller/testController");
 const { createQuestion, updateQuestion } = require("../controller/questionController");
 
@@ -72,6 +73,9 @@ router.route("/fetch/upcoming/test").get(fetchUpcomingTest);
 router.route("/fetch/ongoing/test").get(fetchOngingTest);
 router.route("/fetch/test/:id").get(fetchTestById);
 router.route("/update/test").post(updateTest);
+
+//section
+router.route("/create/section").post(addSectionByQuestion);
 
 
 //question

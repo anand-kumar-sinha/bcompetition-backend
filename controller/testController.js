@@ -432,6 +432,53 @@ const updateTest = async (req, res) => {
   }
 };
 
+const addSectionByQuestion = async (req, res) => {
+  try {
+    const { id, subject } = req.body;
+
+    if (!id || !subject) {
+      return res.status(401).json({
+        success: false,
+        message: "Please provide test id and subject",
+      });
+    }
+
+    const test = await Test.findById(id);
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    const section = await Subject.create({
+      subject,
+    });
+
+    if (!section) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to create section",
+      });
+    }
+
+    test.subject.push(section._id);
+    await test.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Section added successfully",
+      section,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
+
 module.exports = {
   createTest,
   fetchAllTest,
@@ -443,4 +490,5 @@ module.exports = {
   fetchOngingTest,
   fetchTestById,
   updateTest,
+  addSectionByQuestion
 };
