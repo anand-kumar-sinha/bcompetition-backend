@@ -29,6 +29,7 @@ const {
   fetchUpcomingTest,
   fetchOngingTest,
   fetchTestById,
+  updateTest,
 } = require("../controller/testController");
 const { createQuestion, updateQuestion } = require("../controller/questionController");
 
@@ -70,6 +71,7 @@ router.route("/fetch/unpublished/test").get(fetchUnpublishedTest);
 router.route("/fetch/upcoming/test").get(fetchUpcomingTest);
 router.route("/fetch/ongoing/test").get(fetchOngingTest);
 router.route("/fetch/test/:id").get(fetchTestById);
+router.route("/update/test").post(updateTest);
 
 
 //question

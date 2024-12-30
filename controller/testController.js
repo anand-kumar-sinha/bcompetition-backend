@@ -371,7 +371,7 @@ const fetchTestById = async (req, res) => {
         path: "subject",
         populate: {
           path: "question",
-          select: "+correctOption"
+          select: "+correctOption",
         },
       })
       .populate("category");
@@ -395,7 +395,42 @@ const fetchTestById = async (req, res) => {
   }
 };
 
+const updateTest = async (req, res) => {
+  try {
+    const { id, ...data } = req.body;
 
+    if (!id) {
+      return res.status(401).json({
+        success: false,
+        message: "Test ID is required",
+      });
+    }
+
+    const testDocument = await Test.findByIdAndUpdate(
+      id,
+      { $set: data }, // Use $set to update specific fields
+      { new: true, runValidators: true } // Ensure new doc is returned and validations are run
+    );
+
+    if (!testDocument) {
+      return res.status(404).json({
+        success: false,
+        message: "Test not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Test updated successfully",
+      test: testDocument,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
 
 module.exports = {
   createTest,
@@ -407,4 +442,5 @@ module.exports = {
   fetchUpcomingTest,
   fetchOngingTest,
   fetchTestById,
+  updateTest,
 };
