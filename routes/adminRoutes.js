@@ -4,6 +4,7 @@ const {
   loginAdmin,
   adminShut,
   adminDashboard,
+  createUser,
 } = require("../controller/adminController");
 const {
   createCountry,
@@ -47,6 +48,7 @@ const router = express.Router();
 router.route("/auth/login").post(loginAdmin);
 router.route("/auth/register").post(createAdmin);
 router.route("/admin/dashboard").get(adminDashboard);
+router.route("/create/user").post(createUser)
 
 // create locality
 router.route("/create/country").post(createCountry);

@@ -6,10 +6,10 @@ const {
   userProfile,
   fetchCountry,
   fetchState,
+  fetchCity
 } = require("../controller/userController");
 const { protect } = require("../middleware/auth");
 const { fetchCategoryAll } = require("../controller/categoryController");
-const { fetchCity } = require("../controller/localityContoller");
 
 const router = express.Router();
 
