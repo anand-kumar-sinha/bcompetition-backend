@@ -34,6 +34,7 @@ const {
   fetchTestById,
   updateTest,
   addSectionByTest,
+  fetchEnrolledStudents,
 } = require("../controller/testController");
 const {
   createQuestion,
