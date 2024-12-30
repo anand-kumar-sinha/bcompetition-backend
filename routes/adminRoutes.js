@@ -81,7 +81,6 @@ router.route("/fetch/upcoming/test").get(fetchUpcomingTest);
 router.route("/fetch/ongoing/test").get(fetchOngingTest);
 router.route("/fetch/test/:id").get(fetchTestById);
 router.route("/update/test").post(updateTest);
-router.route("/fetch/test/enrolledstudents").get(fetchEnrolledStudents);
 
 //section
 router.route("/create/section").post(addSectionByTest);

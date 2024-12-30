@@ -9,6 +9,7 @@ const {
 } = require("../controller/userController");
 const { protect } = require("../middleware/auth");
 const { fetchCategoryAll } = require("../controller/categoryController");
+const { fetchCity } = require("../controller/localityContoller");
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.route("/user/profile").get(protect, userProfile);
 // Fetch country and state data
 router.route("/fetch/country").get(fetchCountry)
 router.route("/fetch/state/:id").get(fetchState)
+router.route("/fetch/city/:id").get(fetchCity)
 
 //fetch category data
 router.route("/fetch/category").get(fetchCategoryAll);

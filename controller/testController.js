@@ -374,7 +374,8 @@ const fetchTestById = async (req, res) => {
           select: "+correctOption",
         },
       })
-      .populate("category");
+      .populate("category")
+      .populate("enrolledStudents");
     if (!test) {
       return res.status(404).json({
         success: false,
@@ -490,31 +491,15 @@ const addSectionByTest = async (req, res) => {
 
 const fetchEnrolledStudents = async (req, res) => {
   try {
-    const { testId } = req.body;
-    if (!testId) {
-      return res.status(401).json({
-        success: false,
-        message: "Please provide test id",
-      });
-    }
-
-    const test = await Test.findById(testId).populate("enrolledStudents");
-    if (!test) {
-      return res.status(404).json({
-        success: false,
-        message: "Test not found",
-      });
-    }
-
     res.status(200).json({
       success: true,
       message: "Enrolled students fetched successfully",
-      enrolledStudents: test.enrolledStudents,
+      students: [], // TODO: Replace with actual data
     });
   } catch (error) {
     res.status(400).json({
       success: false,
-      error: error.message || error,
+      error: "error.message || error,",
     });
   }
 };
@@ -531,5 +516,5 @@ module.exports = {
   fetchTestById,
   updateTest,
   addSectionByTest,
-  fetchEnrolledStudents
+  fetchEnrolledStudents,
 };

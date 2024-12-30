@@ -4,6 +4,7 @@ const { sendOtpMobileNumber, sendOtpMail } = require("../middleware/sendOtp");
 const generateToken = require("../middleware/generateToken");
 const Country = require("../models/Country");
 const State = require("../models/State");
+const City = require("../models/City");
 
 const auth = async (req, res) => {
   try {
@@ -162,7 +163,7 @@ const userRegister = async (req, res) => {
       });
       return;
     }
-    
+
     user.name = name;
     user.email = email;
     user.school_name = schoolname;
@@ -220,7 +221,7 @@ const userProfile = async (req, res) => {
 
 const fetchCountry = async (req, res) => {
   try {
-    const country = await Country.find({status: true})
+    const country = await Country.find({ status: true });
 
     if (!country) {
       res.status(404).json({
@@ -232,21 +233,20 @@ const fetchCountry = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      country: country
-    })
+      country: country,
+    });
     return;
-
   } catch (error) {
     res.status(400).json({
       success: false,
       error: error,
-    })
+    });
   }
-}
+};
 
 const fetchState = async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
     if (!id) {
       res.status(401).json({
         success: false,
@@ -255,7 +255,7 @@ const fetchState = async (req, res) => {
       return;
     }
 
-    const state = await State.find({countryId: id, status: true})
+    const state = await State.find({ countryId: id, status: true });
     if (!state) {
       res.status(404).json({
         success: false,
@@ -266,15 +266,47 @@ const fetchState = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      state: state
-    })
+      state: state,
+    });
   } catch (error) {
     res.status(400).json({
       success: false,
       error: error.message || error,
     });
   }
-}
+};
+
+const fetchCity = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      res.status(401).json({
+        success: false,
+        message: "Please provide state id",
+      });
+      return;
+    }
+
+    const city = await City.find({ stateId: id, status: true });
+    if (!city) {
+      res.status(404).json({
+        success: false,
+        message: "No city found for this state",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      city: city,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
 
 module.exports = {
   auth,
@@ -282,5 +314,6 @@ module.exports = {
   userRegister,
   userProfile,
   fetchCountry,
-  fetchState
+  fetchState,
+  fetchCity,
 };
