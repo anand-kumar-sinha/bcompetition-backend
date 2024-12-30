@@ -1,3 +1,4 @@
+const Test = require("../models/Test");
 const User = require("../models/User");
 
 const fetchStudents = async (req, res) => {
@@ -39,6 +40,67 @@ const fetchStudents = async (req, res) => {
   }
 };
 
+const enrollStudentInTest = async (req, res) => {
+  try {
+    // validate inputs
+    const { userId, testId } = req.body;
+
+    if (!userId || !testId) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide both user ID and test ID",
+      });
+      return;
+    }
+
+    // find the user and test
+    const user = await User.findById(userId);
+    const test = await Test.findById(testId);
+
+    if (!user || !test) {
+      res.status(404).json({
+        success: false,
+        message: "User or test not found",
+      });
+      return;
+    }
+
+    if(!user.isRegister){
+      res.status(401).json({
+        success: false,
+        message: "User not registered"
+      });
+      return;
+    }
+
+    // check if user is already enrolled in the test
+    if (user.enrolledTest.includes(test._id)) {
+      res.status(400).json({
+        success: false,
+        message: "User is already enrolled in the test",
+      });
+      return;
+    }
+
+    // add test id to the user's enrolledTest array
+    user.enrolledTest.push(test._id);
+    test.enrolledStudents.push(user._id);
+    await user.save();
+    await test.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User enrolled successfully in the test",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
+
 module.exports = {
   fetchStudents,
+  enrollStudentInTest,
 };

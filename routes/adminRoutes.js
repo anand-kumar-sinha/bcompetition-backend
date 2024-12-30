@@ -18,7 +18,10 @@ const {
   createCategory,
   fetchCategory,
 } = require("../controller/categoryController");
-const { fetchStudents } = require("../controller/studentController");
+const {
+  fetchStudents,
+  enrollStudentInTest,
+} = require("../controller/studentController");
 const {
   createTest,
   fetchAllTest,
@@ -32,7 +35,10 @@ const {
   updateTest,
   addSectionByTest,
 } = require("../controller/testController");
-const { createQuestion, updateQuestion } = require("../controller/questionController");
+const {
+  createQuestion,
+  updateQuestion,
+} = require("../controller/questionController");
 
 const router = express.Router();
 
@@ -61,6 +67,7 @@ router.route("/fetch/category").get(fetchCategory);
 
 //students
 router.route("/fetch/students").get(fetchStudents);
+router.route("/student/enroll").post(enrollStudentInTest);
 
 //test
 router.route("/create/test").post(createTest);
@@ -73,14 +80,13 @@ router.route("/fetch/upcoming/test").get(fetchUpcomingTest);
 router.route("/fetch/ongoing/test").get(fetchOngingTest);
 router.route("/fetch/test/:id").get(fetchTestById);
 router.route("/update/test").post(updateTest);
+router.route("/fetch/test/enrolledstudents").get(fetchEnrolledStudents);
 
 //section
 router.route("/create/section").post(addSectionByTest);
 
-
 //question
 router.route("/create/question").post(createQuestion);
 router.route("/update/question").post(updateQuestion);
-
 
 module.exports = router;
