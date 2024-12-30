@@ -432,7 +432,7 @@ const updateTest = async (req, res) => {
   }
 };
 
-const addSectionByQuestion = async (req, res) => {
+const addSectionByTest = async (req, res) => {
   try {
     const { id, subject } = req.body;
 
@@ -443,13 +443,22 @@ const addSectionByQuestion = async (req, res) => {
       });
     }
 
-    const test = await Test.findById(id);
+    const test = await Test.findById(id).populate("subject");
 
     if (!test) {
       return res.status(404).json({
         success: false,
         message: "Test not found",
       });
+    }
+
+    for (let item of test.subject) {
+      if (item.subject.toLowerCase() === subject.toLowerCase()) {
+        return res.status(400).json({
+          success: false,
+          message: "Subject already exists in the test",
+        });
+      }
     }
 
     const section = await Subject.create({
@@ -490,5 +499,5 @@ module.exports = {
   fetchOngingTest,
   fetchTestById,
   updateTest,
-  addSectionByQuestion
+  addSectionByTest,
 };
