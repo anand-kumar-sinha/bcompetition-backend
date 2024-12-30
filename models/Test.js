@@ -108,6 +108,12 @@ const testSchema = new mongoose.Schema({
       },
     },
   ],
+  enrolledStudents: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
+  ],
   created: {
     type: Date,
     default: Date.now,

@@ -81,6 +81,12 @@ const userSchema = new mongoose.Schema({
     default:
       "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1732461238~exp=1732464838~hmac=c5526687db2dbb14683397ad1940f6d9c05e7b7b442683e0d778d5645e7c9e72&w=740",
   },
+  enrolledTest: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Test",
+    }
+  ],
   created: {
     type: Date,
     default: Date.now,
