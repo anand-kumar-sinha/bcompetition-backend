@@ -22,6 +22,7 @@ const {
 const {
   fetchStudents,
   enrollStudentInTest,
+  unenrollStudentInTest,
 } = require("../controller/studentController");
 const {
   createTest,
@@ -70,7 +71,7 @@ router.route("/fetch/category").get(fetchCategory);
 
 //students
 router.route("/fetch/students").get(fetchStudents);
-router.route("/student/enroll").post(enrollStudentInTest);
+router.route("/student/enroll").post(enrollStudentInTest).delete(unenrollStudentInTest);
 
 //test
 router.route("/create/test").post(createTest);

@@ -100,7 +100,70 @@ const enrollStudentInTest = async (req, res) => {
   }
 };
 
+const unenrollStudentInTest = async (req, res) => {
+  try {
+    // validate inputs
+    const { userId, testId } = req.body;
+
+    if (!userId || !testId) {
+      res.status(400).json({
+        success: false,
+        message: "Please provide both user ID and test ID",
+      });
+      return;
+    }
+
+    // find the user and test
+    const user = await User.findById(userId);
+    const test = await Test.findById(testId);
+
+    if (!user || !test) {
+      res.status(404).json({
+        success: false,
+        message: "User or test not found",
+      });
+      return;
+    }
+
+    if(!user.isRegister){
+      res.status(401).json({
+        success: false,
+        message: "User not registered"
+      });
+      return;
+    }
+
+    // check if user is already enrolled in the test
+    if (!user.enrolledTest.includes(test._id)) {
+      res.status(400).json({
+        success: false,
+        message: "user is not enrolled in the test",
+      });
+      return;
+    }
+
+    // add test id to the user's enrolledTest array
+    user.enrolledTest.remove(test._id);
+    test.enrolledStudents.remove(user._id);
+    await user.save();
+    await test.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User unenrolled successfully in the test",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
+
+
+
 module.exports = {
   fetchStudents,
   enrollStudentInTest,
+  unenrollStudentInTest
 };
