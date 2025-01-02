@@ -387,6 +387,7 @@ const fetchTestById = async (req, res) => {
       success: true,
       message: "Test fetched successfully",
       test: test,
+      timestamp: new Date(),
     });
   } catch (error) {
     res.status(404).json({
@@ -562,9 +563,13 @@ const fetchTestByCategory = async (req, res) => {
       });
       return;
     }
+    const query = {
+      isDeleted: false,
+      publish_at: { $exists: true, $ne: null }, // Ensure publish_at exists and is not null
+    };
     if ("676d1eb1425d3d8ed4330908" === id) {
-      const total = await Test.countDocuments({isDeleted: false});
-      const tests = await Test.find({isDeleted: false}).skip(skip).limit(limit);
+      const total = await Test.countDocuments(query);
+      const tests = await Test.find(query).skip(skip).limit(limit);
 
       if (!tests || tests.length === 0) {
         return res.status(404).json({
@@ -584,8 +589,8 @@ const fetchTestByCategory = async (req, res) => {
 
       return;
     }
-    const total = await Test.countDocuments({ category: id, isDeleted: false });
-    const tests = await Test.find({ category: id }).skip(skip).limit(limit);
+    const total = await Test.countDocuments(query);
+    const tests = await Test.find(query).skip(skip).limit(limit);
     if (!tests || tests.length === 0) {
       return res.status(404).json({
         success: false,
@@ -608,6 +613,7 @@ const fetchTestByCategory = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   createTest,
   fetchAllTest,

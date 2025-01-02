@@ -85,6 +85,7 @@ const enrollStudentInTest = async (req, res) => {
     // add test id to the user's enrolledTest array
     user.enrolledTest.push(test._id);
     test.enrolledStudents.push(user._id);
+    test.slots = test.slots - 1;
     await user.save();
     await test.save();
 
@@ -145,6 +146,7 @@ const unenrollStudentInTest = async (req, res) => {
     // add test id to the user's enrolledTest array
     user.enrolledTest.remove(test._id);
     test.enrolledStudents.remove(user._id);
+    test.slots = parseInt(test.slots) + 1;
     await user.save();
     await test.save();
 

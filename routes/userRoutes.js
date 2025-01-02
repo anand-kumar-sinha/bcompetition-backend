@@ -10,7 +10,7 @@ const {
 } = require("../controller/userController");
 const { protect } = require("../middleware/auth");
 const { fetchCategoryAll } = require("../controller/categoryController");
-const { fetchTestByCategory } = require("../controller/testController");
+const { fetchTestByCategory, fetchTestById } = require("../controller/testController");
 
 const router = express.Router();
 
@@ -28,7 +28,9 @@ router.route("/fetch/city/:id").get(fetchCity)
 //fetch category data
 router.route("/fetch/category").get(fetchCategoryAll);
 
-//fetch test by category
+//fetch test
 router.route("/fetch/test/category/:id").get(fetchTestByCategory);
+router.route("/fetch/test/:id").get(fetchTestById);
+
 
 module.exports = router;
