@@ -545,6 +545,69 @@ const fetchEnrolledStudents = async (req, res) => {
   }
 };
 
+const fetchTestByCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { page } = req.query;
+
+    const limit = 5;
+    if (!page || page < 1) {
+      page = 1;
+    }
+    const skip = (page - 1) * limit;
+    if (!id) {
+      res.status(401).json({
+        success: false,
+        message: "Please provide category id",
+      });
+      return;
+    }
+    if ("676d1eb1425d3d8ed4330908" === id) {
+      const total = await Test.countDocuments({isDeleted: false});
+      const tests = await Test.find({isDeleted: false}).skip(skip).limit(limit);
+
+      if (!tests || tests.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No test found",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Test fetched successfully",
+        tests: tests,
+        total: total,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+      });
+
+      return;
+    }
+    const total = await Test.countDocuments({ category: id, isDeleted: false });
+    const tests = await Test.find({ category: id }).skip(skip).limit(limit);
+    if (!tests || tests.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No test found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Test fetched successfully",
+      tests: tests,
+      total: total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error.message || error,
+    });
+  }
+};
 module.exports = {
   createTest,
   fetchAllTest,
@@ -558,4 +621,5 @@ module.exports = {
   updateTest,
   addSectionByTest,
   fetchEnrolledStudents,
+  fetchTestByCategory,
 };
