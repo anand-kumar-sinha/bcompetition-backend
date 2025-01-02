@@ -5,6 +5,7 @@ const generateToken = require("../middleware/generateToken");
 const Country = require("../models/Country");
 const State = require("../models/State");
 const City = require("../models/City");
+const generateReferralCode = require("../middleware/generateRefferalCode");
 
 const auth = async (req, res) => {
   try {
@@ -121,11 +122,9 @@ const userRegister = async (req, res) => {
       schoolname,
       dob,
       gender,
-      address,
-      pincode,
       country,
       state,
-      district,
+      city,
       referCode,
     } = req.body;
 
@@ -136,10 +135,9 @@ const userRegister = async (req, res) => {
       !schoolname ||
       !dob ||
       !gender ||
-      !pincode ||
       !country ||
       !state ||
-      !district
+      !city
     ) {
       res.status(401).json({
         success: false,
@@ -164,18 +162,18 @@ const userRegister = async (req, res) => {
       return;
     }
 
+    const refferalCode = generateReferralCode();
+
     user.name = name;
     user.email = email;
     user.school_name = schoolname;
     user.date_of_birth = dob;
     user.gender = gender;
-    user.address = address;
-    user.pin_code = pincode;
-    user.country = country;
-    user.state = state;
-    user.city = district;
+    user.country = country.id;
+    user.state = state.id;
+    user.city = city.id;
     user.refer_code = referCode;
-    user.referral_code = user._id.toString();
+    user.referral_code = refferalCode;
     user.isRegister = true;
     user.wallet_amount = 0;
 

@@ -21,20 +21,17 @@ const userSchema = new mongoose.Schema({
   mobile_number: {
     type: String,
   },
-  address: {
-    type: String,
-  },
   country: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "Country",
   },
   state: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "State",
   },
   city: {
-    type: String,
-  },
-  pin_code: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: "City",
   },
   language_id: {
     type: String,
