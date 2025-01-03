@@ -130,6 +130,7 @@ const createUser = async (req, res) => {
       country,
       state,
       city,
+      reffCode
     } = req.body;
 
     if (
@@ -139,8 +140,6 @@ const createUser = async (req, res) => {
       !schoolname ||
       !dob ||
       !gender ||
-      !address ||
-      !pincode ||
       !country ||
       !state ||
       !city 
@@ -152,7 +151,7 @@ const createUser = async (req, res) => {
       return;
     }
 
-    const userExists = await User.findOne({ mobile_number });
+    let userExists = await User.findOne({ mobile_number });
     if (userExists) {
       res.status(400).json({
         success: false,
@@ -161,9 +160,18 @@ const createUser = async (req, res) => {
       return;
     }
 
-    const countryName = await Country.findById(country);
-    const stateName = await State.findById(state);
-    const cityName = await City.findById(city);
+    userExists = await User.findOne({ email });
+    if (userExists) {
+      res.status(400).json({
+        success: false,
+        message: "User with this email already exists",
+      });
+      return;
+    }
+
+    const countryName = await Country.findById(country.id);
+    const stateName = await State.findById(state.id);
+    const cityName = await City.findById(city.id);
 
     const referral_code = generateReferralCode();
 
@@ -174,12 +182,11 @@ const createUser = async (req, res) => {
       school_name: schoolname,
       date_of_birth: dob,
       gender,
-      address,
-      pincode,
-      country: countryName.country,
-      state: stateName.state,
-      city: cityName.city,
+      country: countryName.id,
+      state: stateName.id,
+      city: cityName.id,
       referral_code,
+      refer_code: reffCode,
       isRegister: true,
       wallet_amount: 0,
       reward_earn: 0,
