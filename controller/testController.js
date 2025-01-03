@@ -567,7 +567,7 @@ const fetchTestByCategory = async (req, res) => {
       isDeleted: false,
       publish_at: { $exists: true, $ne: null }, // Ensure publish_at exists and is not null
     };
-    if ("676d1eb1425d3d8ed4330908" === id) {
+    if ("6776250273a38a6c4308042c" === id) {
       const total = await Test.countDocuments(query);
       const tests = await Test.find(query).skip(skip).limit(limit);
 
