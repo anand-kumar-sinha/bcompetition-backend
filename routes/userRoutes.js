@@ -11,6 +11,7 @@ const {
 const { protect } = require("../middleware/auth");
 const { fetchCategoryAll } = require("../controller/categoryController");
 const { fetchTestByCategory, fetchTestById } = require("../controller/testController");
+const { enrollStudentInTest } = require("../controller/studentController");
 
 const router = express.Router();
 
@@ -31,6 +32,6 @@ router.route("/fetch/category").get(fetchCategoryAll);
 //fetch test
 router.route("/fetch/test/category/:id").get(fetchTestByCategory);
 router.route("/fetch/test/:id").get(fetchTestById);
-
+router.route("/student/enroll").post(enrollStudentInTest)
 
 module.exports = router;
